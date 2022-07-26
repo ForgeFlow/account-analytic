@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_account_analytic_country_tree" model="ir.ui.view">
+            <field name="name">account.analytic.country.tree</field>
+            <field name="model">account.analytic.default</field>
+            <field name="inherit_id" ref="account_analytic_default.view_account_analytic_default_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_stop']" position="after">
+                    <field name="country_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_analytic_country_form" model="ir.ui.view">
+            <field name="name">account.analytic.country.form</field>
+            <field name="model">account.analytic.default</field>
+            <field name="inherit_id" ref="account_analytic_default.view_account_analytic_default_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_stop']" position="after">
+                    <field name="country_id"/>
+                    <field name="catch_all_countries"/>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>
