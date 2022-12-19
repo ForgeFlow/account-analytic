@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl)
 
 from odoo import api, fields, models, _
+from odoo.osv import expression
 
 
 class AccountAnalyticDefault(models.Model):
@@ -24,14 +25,13 @@ class AccountAnalyticDefault(models.Model):
     @api.model
     def account_get(self, product_id=None, partner_id=None, user_id=None, date=None, company_id=None):
         res = super(AccountAnalyticDefault, self).account_get(product_id, partner_id, user_id, date, company_id)
-        domain = []
+        domain = [('company_id', '=', False)]
         if company_id:
-            domain += ["|", ("company_id", "=", company_id)]
-        domain += [('company_id', '=', False)]
+            domain = expression.OR([domain, [("company_id", "=", company_id)]])
         if partner_id:
             partner = self.env['res.partner'].browse(partner_id)
             if partner.country_id:
-                res = self.search(domain + [('country_id', '=', partner.country_id.id)])
+                res = self.search(expression.AND([domain, [('country_id', '=', partner.country_id.id)]]))
                 if not res:
-                    res = self.search(domain + [('catch_all_countries', '=', True)])
+                    res = self.search(expression.AND([domain, [('catch_all_countries', '=', True)]]))
         return res
