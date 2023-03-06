@@ -26,6 +26,8 @@ class AccountAnalyticDefault(models.Model):
     def account_get(self, product_id=None, partner_id=None, user_id=None, date=None, company_id=None):
         res = super(AccountAnalyticDefault, self).account_get(product_id, partner_id, user_id, date, company_id)
         domain = [('company_id', '=', False)]
+        if res and res.partner_id:
+            return res
         if company_id:
             domain = expression.OR([domain, [("company_id", "=", company_id)]])
         if partner_id:
