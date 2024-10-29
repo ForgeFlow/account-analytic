@@ -9,6 +9,8 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.models import NewId
+from odoo.tools import partition
 
 
 class AccountAnalyticAccount(models.Model):
@@ -46,6 +48,10 @@ class AccountAnalyticAccount(models.Model):
         AccountAnalyticLine = self.env["account.analytic.line"]
         user_currency_id = self.env.user.company_id.currency_id
 
+        # the exists below is not enough when all records are newId
+        new_ids, ids = partition(lambda i: isinstance(i, NewId), self._ids)
+        if not ids:
+            return
         # Re-compute only accounts with children
         for account in self.exists().filtered("child_ids"):
             domain = [("account_id", "child_of", account.id)]
